@@ -2,6 +2,7 @@ package org.rajawali3d.examples.examples.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,8 +23,10 @@ import org.rajawali3d.examples.examples.AExampleFragment;
 import org.rajawali3d.materials.Material;
 import org.rajawali3d.materials.textures.ATexture;
 import org.rajawali3d.materials.textures.StreamingTexture;
+import org.rajawali3d.materials.textures.Texture;
 import org.rajawali3d.math.vector.Vector3;
 import org.rajawali3d.primitives.Cube;
+import org.rajawali3d.primitives.Plane;
 
 public class ViewToTextureFragment extends AExampleFragment {
 
@@ -89,6 +92,7 @@ public class ViewToTextureFragment extends AExampleFragment {
                 e.printStackTrace();
             }
             mObject3D.setMaterial(material);
+            mObject3D.setTransparent(true);
 
             getCurrentScene().addChild(mObject3D);
 
@@ -99,6 +103,33 @@ public class ViewToTextureFragment extends AExampleFragment {
             anim.setTransformable3D(mObject3D);
             getCurrentScene().registerAnimation(anim);
             anim.play();
+
+
+            try {
+                Material material1 = new Material();
+//				Bitmap bmp = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.flower3);
+//				Texture texture = new Texture("earthColors2", bmp);
+                Texture texture = new Texture("earthColors2", R.drawable.flower3);
+                material1.addTexture(texture);
+//                material1.setColorInfluence(0);
+//                material1.setColor(0);
+                texture.setWrapType(ATexture.WrapType.CLAMP);
+                texture.setFilterType(ATexture.FilterType.LINEAR);
+                texture.setInfluence(1);
+
+
+                Plane plane1 = new Plane();
+                plane1.setMaterial(material);
+                plane1.setPosition(0f, 0f, -0.5f);
+                plane1.setColor(Color.WHITE);
+                plane1.setTransparent(true);
+
+                getCurrentScene().addChild(plane1);
+            }catch (ATexture.TextureException e){
+                e.printStackTrace();
+            }
+
+            getCurrentScene().setBackgroundColor(Color.WHITE);
         }
 
         final Runnable mUpdateTexture = new Runnable() {
@@ -137,19 +168,19 @@ public class ViewToTextureFragment extends AExampleFragment {
 
     public static final class FragmentToDraw extends Fragment {
 
-        WebView mWebView;
+//        WebView mWebView;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            final View view = inflater.inflate(R.layout.view_to_texture, container, false);
-            mWebView = (WebView) view.findViewById(R.id.webview);
-            mWebView.setWebViewClient(new WebViewClient());
-            // Load the Rajawali Repo commit activity graph
-            //webView.loadUrl("https://github.com/Rajawali/Rajawali/graphs/commit-activity");
-            mWebView.loadUrl("https://plus.google.com/communities/116529974266844528013");
-            mWebView.setInitialScale(100);
-            mWebView.setScrollY(0);
-            mWebView.animate().rotationYBy(360.0f).setDuration(60000);
+            final View view = inflater.inflate(R.layout.view_to_texture2, container, false);
+//            mWebView = (WebView) view.findViewById(R.id.webview);
+//            mWebView.setWebViewClient(new WebViewClient());
+//            // Load the Rajawali Repo commit activity graph
+//            //webView.loadUrl("https://github.com/Rajawali/Rajawali/graphs/commit-activity");
+//            mWebView.loadUrl("https://plus.google.com/communities/116529974266844528013");
+//            mWebView.setInitialScale(100);
+//            mWebView.setScrollY(0);
+//            mWebView.animate().rotationYBy(360.0f).setDuration(60000);
             view.setVisibility(View.INVISIBLE);
             return view;
         }

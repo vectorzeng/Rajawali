@@ -1,6 +1,9 @@
 package org.rajawali3d.examples.examples.general;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -17,9 +20,11 @@ import org.rajawali3d.Object3D;
 import org.rajawali3d.examples.R;
 import org.rajawali3d.examples.examples.AExampleFragment;
 import org.rajawali3d.materials.Material;
+import org.rajawali3d.materials.plugins.AlphaMaskMaterialPlugin;
 import org.rajawali3d.materials.textures.ATexture;
 import org.rajawali3d.materials.textures.Texture;
 import org.rajawali3d.math.vector.Vector3;
+import org.rajawali3d.primitives.Plane;
 import org.rajawali3d.primitives.Sphere;
 
 public class BasicFragment extends AExampleFragment implements SensorEventListener {
@@ -58,45 +63,6 @@ public class BasicFragment extends AExampleFragment implements SensorEventListen
 		if(mRenderer instanceof BasicRenderer) {
 			basicRenderer = (BasicRenderer) mRenderer;
 		}
-		rootView.findViewById(R.id.btn_left).setOnTouchListener(new View.OnTouchListener(){
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-//				lookAtX += speed;
-//				basicRenderer.setLookAtX(lookAtX);
-				basicRenderer.getCurrentCamera().rotate(Vector3.Axis.Y, -0.1);
-				Log.i(TAG, "btn_left touch " + event.getAction());
-				return true;
-			}
-		});
-
-		rootView.findViewById(R.id.btn_right).setOnTouchListener(new View.OnTouchListener(){
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				basicRenderer.getCurrentCamera().rotate(Vector3.Axis.Y, 0.1);
-				Log.i(TAG, "btn_right touch " + event.getAction());
-				return true;
-			}
-		});
-
-		rootView.findViewById(R.id.btn_up).setOnTouchListener(new View.OnTouchListener(){
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				basicRenderer.getCurrentCamera().moveUp(0.01);
-				return false;
-			}
-		});
-
-		rootView.findViewById(R.id.btn_down).setOnTouchListener(new View.OnTouchListener(){
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				basicRenderer.getCurrentCamera().moveUp(-0.01);
-				return false;
-			}
-		});
 		return rootView;
 	}
 
@@ -176,29 +142,78 @@ public class BasicFragment extends AExampleFragment implements SensorEventListen
 		protected void initScene() {
 
 			try {
-				getCurrentScene().setSkybox(R.drawable.posx, R.drawable.negx,
-						R.drawable.posy, R.drawable.negy, R.drawable.posz, R.drawable.negz);
-			} catch (ATexture.TextureException e) {
-				e.printStackTrace();
-			}
-			try {
 				Material material = new Material();
 				material.addTexture(new Texture("earthColors",
-												R.drawable.earthtruecolor_nasa_big));
+												R.drawable.flower2));
 				material.setColorInfluence(0);
 				mSphere = new Sphere(1, 24, 24);
 				mSphere.setMaterial(material);
+				mSphere.setTransparent(true);
+				mSphere.setZ(-20);
 				getCurrentScene().addChild(mSphere);
 			} catch (ATexture.TextureException e) {
 				e.printStackTrace();
 			}
+
+			try {
+				Material material = new Material();
+//				Bitmap bmp = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.flower3);
+//				Texture texture = new Texture("earthColors2", bmp);
+				AlphaMaskMaterialPlugin plugin = new AlphaMaskMaterialPlugin(0.9f);
+				Texture texture = new Texture("earthColors2", R.drawable.flower3);
+				material.addTexture(texture);
+				material.setColorInfluence(0);
+				material.setColor(Color.WHITE);
+				material.addPlugin(plugin);
+				texture.setWrapType(ATexture.WrapType.CLAMP);
+				texture.setFilterType(ATexture.FilterType.LINEAR);
+				texture.setMipmap(false);
+				texture.setInfluence(1);
+
+
+				Plane plane1 = new Plane();
+				plane1.setMaterial(material);
+				plane1.setPosition(0, 0f, 8f);
+				plane1.setTransparent(true);
+
+				getCurrentScene().addChild(plane1);
+			}catch (ATexture.TextureException e){
+				e.printStackTrace();
+			}
+
+
+            try {
+                Material material = new Material();
+//				Bitmap bmp = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.flower3);
+//				Texture texture = new Texture("earthColors2", bmp);
+                Texture texture = new Texture("earthColors3", R.drawable.flower3);
+                material.addTexture(texture);
+                material.setColorInfluence(0);
+                material.setColor(0);
+//				texture.setWrapType(ATexture.WrapType.CLAMP);
+//				texture.setFilterType(ATexture.FilterType.LINEAR);
+//				texture.setMipmap(false);
+                texture.setInfluence(1);
+
+
+                Plane plane1 = new Plane();
+                plane1.setMaterial(material);
+                plane1.setPosition(-.2f, 1.5f, 2.5f);
+                plane1.setTransparent(true);
+
+                getCurrentScene().addChild(plane1);
+            }catch (ATexture.TextureException e){
+                e.printStackTrace();
+            }
 
 			Log.d(TAG, "Camera initial1 orientation: " + getCurrentCamera().getOrientation());
 			Log.d(TAG, "Camera initial2 orientation: " + getCurrentCamera().getOrientation().inverse());
 			Log.d(TAG, "Camera initial3 orientation: " + getCurrentCamera().getOrientation());
             getCurrentCamera().enableLookAt();
             getCurrentCamera().setLookAt(0, 0, 0);
-            getCurrentCamera().setZ(20);
+            getCurrentCamera().setZ(10);
+
+            getCurrentScene().setBackgroundColor(Color.WHITE);
 
 //			getCurrentCamera().setOrientation(getCurrentCamera().getOrientation().inverse());
 

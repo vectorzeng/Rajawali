@@ -36,6 +36,12 @@ public class OrthographicFragment extends AExampleFragment {
 
         @Override
 		protected void initScene() {
+			try {
+				getCurrentScene().setSkybox(R.drawable.posx, R.drawable.negx,
+						R.drawable.posy, R.drawable.negy, R.drawable.posz, R.drawable.negz);
+			} catch (ATexture.TextureException e) {
+				e.printStackTrace();
+			}
 			OrthographicCamera orthoCam = new OrthographicCamera();
             orthoCam.setLookAt(0, 0, 0);
             orthoCam.enableLookAt();
@@ -54,7 +60,7 @@ public class OrthographicFragment extends AExampleFragment {
 
 			Material material = new Material();
 			try {
-				material.addTexture(new Texture("checkerboard", R.drawable.checkerboard));
+				material.addTexture(new Texture("checkerboard", R.drawable.flower2));
 				material.setColorInfluence(0);
 			} catch (ATexture.TextureException e) {
 				e.printStackTrace();
